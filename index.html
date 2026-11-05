@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bank Sampah Nusa</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<style>
+:root{--em:#0d3b30;--em2:#14543f;--gold:#c9a961;--ivory:#f8f5ee;--card:#fff;--ink:#16241f;--mut:#6b7a73;--line:#e6e0d1;--bad:#a8322a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--ivory:#0c1a16;--card:#142a23;--ink:#efe9d8;--mut:#9fb1a8;--line:#27423a}}
+:root[data-theme="dark"]{--ivory:#0c1a16;--card:#142a23;--ink:#efe9d8;--mut:#9fb1a8;--line:#27423a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{height:100%;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--ivory);color:var(--ink);font:400 15px/1.55 "Plus Jakarta Sans",system-ui,sans-serif}
+.serif{font-family:"Cormorant Garamond",Georgia,serif}
+.scr{display:none;min-height:100%;padding:20px 18px 96px;max-width:560px;margin:0 auto}.scr.on{display:block}
+#splash,#onb,#reg{background:var(--em);color:#f4efe0;max-width:none;padding-bottom:30px}
+#splash.on{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.logo{width:92px;height:92px;border:2px solid var(--gold);border-radius:50%;display:grid;place-items:center;margin-bottom:18px;animation:pop .9s ease both}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.logo{animation:none}}
+h1.serif{font-size:40px;line-height:1.05;margin:0;font-weight:700;letter-spacing:.5px}
+.tag{color:var(--gold);margin:8px 0 0;font-size:14px}
+.wrap{max-width:520px;margin:0 auto}
+.slide{display:none;text-align:center;padding-top:8vh}.slide.on{display:block}
+.slide .ic{width:120px;height:120px;margin:0 auto 22px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center}
+.slide h2{font-size:32px;margin:0 0 10px}.slide p{opacity:.85;margin:0 auto;max-width:320px}
+.dots{display:flex;justify-content:center;gap:8px;margin:26px 0}.dots i{width:8px;height:8px;border-radius:8px;background:#ffffff40}.dots i.on{width:26px;background:var(--gold)}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;text-align:center;text-decoration:none;background:var(--gold);color:#1b2a22;margin-top:12px}
+.btn.dk{background:var(--em);color:#f4efe0}.btn.ln{background:none;border:1px solid var(--line);color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+label{display:block;font-size:12px;font-weight:600;margin:12px 0 4px;color:var(--mut)}
+#reg label{color:#d8d0b8}
+input,select,textarea{width:100%;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+h3{margin:0 0 10px;font-size:15px}
+.top h2{font-size:30px;margin:0}.top p{margin:0;color:var(--mut);font-size:13px}
+.bal{background:linear-gradient(145deg,var(--em),var(--em2));color:#f4efe0;border-radius:22px;padding:22px;margin:16px 0;position:relative;overflow:hidden;border:1px solid var(--gold)}
+.bal small{color:var(--gold)}.bal b{display:block;font:700 36px "Cormorant Garamond",Georgia,serif;margin-top:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;text-align:left;cursor:pointer;color:var(--ink);font-weight:600;font-size:14px;font-family:inherit}
+.tile small{display:block;font-weight:400;color:var(--mut)}
+.row{display:grid;grid-template-columns:1fr 92px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.row small{color:var(--mut)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{border:1.5px solid var(--line);border-radius:14px;padding:12px;font-weight:600;font-size:13px;cursor:pointer}.opt small{display:block;font-weight:400;color:var(--mut)}
+.opt.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,transparent)}
+.note{font-size:13px;padding:11px 12px;border-radius:12px;background:color-mix(in srgb,var(--gold) 20%,transparent);margin-top:10px}.note.bad{background:color-mix(in srgb,var(--bad) 14%,transparent)}
+#map{width:100%;display:block;border-radius:18px;border:1px solid var(--gold)}
+.sum .l{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line)}
+.sum .l span:first-child{color:var(--ink)}.sum .l small{display:block;color:var(--mut);font-size:12px}
+.sum .l span:last-child{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap;text-align:right}.sum .l.neg span:last-child{color:var(--bad)}
+.sum .sg{font-size:12px;font-weight:700;color:var(--mut);margin:14px 0 2px;letter-spacing:.3px}
+.sum .tot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--em);color:#f4efe0;font-size:14px;font-weight:700}
+.sum .tot span:last-child{font-family:"Cormorant Garamond",Georgia,serif;font-size:26px;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+#gmap{height:320px;border-radius:18px;border:1px solid var(--gold);background:#dfe6e0;z-index:0}.leaflet-container{font-family:inherit}
+.seg{display:flex;gap:8px;margin-top:10px}.seg button{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:600;font-size:13px;font-family:inherit;cursor:pointer}.seg button.on{background:var(--em);color:#f4efe0;border-color:var(--em)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tab{position:fixed;left:0;right:0;bottom:0;display:none;background:var(--card);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:9}
+.tab.on{display:flex;max-width:560px;margin:0 auto}
+.tab button{flex:1;border:0;background:none;color:var(--mut);padding:8px 2px;font-weight:600;font-size:11px;font-family:inherit;cursor:pointer;border-radius:10px}
+.tab button svg{display:block;margin:0 auto 3px}.tab button.on{color:var(--em2);background:color-mix(in srgb,var(--gold) 22%,transparent)}
+.stars button{border:0;background:none;font-size:30px;color:var(--line);cursor:pointer;padding:0 2px}.stars button.on{color:var(--gold)}
+.h{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+</style></head><body>
+<div class="scr on" id="splash"><div class="logo"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#c9a961" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19H4l3-5M17 5h3l-3 5M9 4l3-2 3 2M12 2l3 5M4 14l-1-3 4-1M21 14l-3 5h-5"/><path d="M12 8l3 5-3 5-3-5z" opacity=".0"/></svg></div>
+<h1 class="serif">Bank Sampah<br>Nusa</h1><p class="tag">Tukar sampah tanpa datang ke lokasi</p></div>
+
+<div class="scr" id="onb"><div class="wrap">
+<div class="slide on"><div class="ic"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#c9a961" stroke-width="1.4"><path d="M5 7h14l-1.2 13H6.2zM9 7V4h6v3"/></svg></div><h2 class="serif">Kumpulkan</h2><p>Pilah plastik, kertas, logam, kaca, dan minyak jelantah dari rumah Anda.</p></div>
+<div class="slide"><div class="ic"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#c9a961" stroke-width="1.4"><rect x="2" y="9" width="12" height="8" rx="1"/><path d="M14 11h4l3 3v3h-7M6 20a2 2 0 100-4 2 2 0 000 4zM17 20a2 2 0 100-4 2 2 0 000 4z"/></svg></div><h2 class="serif">Antar atau dijemput</h2><p>Kirim lewat kurir instan, atau dijemput petugas dengan gratis ongkir.</p></div>
+<div class="slide"><div class="ic"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#c9a961" stroke-width="1.4"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 15h2"/></svg></div><h2 class="serif">Terima saldo</h2><p>Hasil penukaran masuk ke rekening atau e-wallet Anda, lengkap dengan rincian pajak.</p></div>
+<div class="dots"><i class="on"></i><i></i><i></i></div>
+<button class="btn" id="nx">Lanjut</button><button class="btn ln" id="sk" style="color:#f4efe0;border-color:#ffffff40">Lewati</button></div></div>
+
+<div class="scr" id="reg"><div class="wrap"><h2 class="serif" style="font-size:34px;margin:6vh 0 4px">Buat profil Anda</h2><p style="opacity:.8;margin:0">Data ini dipakai untuk penjemputan dan pembayaran hasil penukaran.</p>
+<label>Nama lengkap</label><input id="r_nama" autocomplete="name"><label>Nomor HP</label><input id="r_hp" type="tel">
+<label>Alamat lengkap (jalan, RT/RW, kelurahan, kecamatan, kota, kode pos)</label><textarea id="r_alamat" rows="3"></textarea>
+<label>Bank / e-wallet</label><select id="r_bank"></select><label>Nomor rekening / e-wallet</label><input id="r_no" inputmode="numeric">
+<label>Nama lengkap sesuai rekening / e-wallet</label><input id="r_an"><div id="rMsg" class="note bad" hidden></div>
+<button class="btn" id="rGo">Simpan dan mulai</button></div></div>
+
+<div class="scr" id="beranda"><div class="top"><p id="hi">Selamat datang</p><h2 class="serif">Bank Sampah Nusa</h2></div>
+<div class="bal"><small>Total saldo diterima</small><b id="saldo">Rp 0</b><small id="tot">0 kg sampah ditukar</small></div>
+<div class="grid"><button class="tile" data-go="tukar">Tukar sampah<small>Kurir instan atau jemput</small></button><button class="tile" data-go="lacak">Lacak pengantar<small>Peta satelit</small></button>
+<button class="tile" data-go="riwayat">Riwayat<small>Semua penukaran</small></button><button class="tile" data-go="profil">Biodata<small>Alamat dan rekening</small></button></div>
+<div class="card" style="margin-top:14px"><h3>Aturan singkat</h3><div style="font-size:13px;color:var(--mut)">Kurir instan: minimal 5 kg dan jarak 0-5 km, pajak dan jasa antar ditanggung pengirim. Di luar itu, jasa antar dibagi 50%-50%. Dijemput petugas: gratis ongkir.</div></div></div>
+
+<div class="scr" id="tukar"><div class="top"><h2 class="serif">Penukaran</h2><p>Isi sampah, pilih pengantaran, lihat hasilnya.</p></div>
+<div class="card" style="margin-top:14px"><h3>Jenis dan berat sampah</h3><div id="items"></div></div>
+<div class="card"><h3>Cara pengantaran</h3><div class="opts"><div class="opt on" data-m="instan">Kurir instan<small>Shopee, Grab, Maxim, Gojek, Lalamove</small></div><div class="opt" data-m="jemput">Dijemput petugas<small>Gratis ongkir</small></div></div>
+<div id="iBox"><label>Aplikasi kurir</label><select id="app"><option>Shopee Instant</option><option>Grab Instant</option><option>Maxim Instant</option><option>Gojek Instant</option><option>Lalamove</option></select><label>Jarak ke bank sampah (km)</label><input id="km" type="number" min="0" step="0.1" value="3"></div>
+<div id="jBox" hidden class="note">Petugas penjemput: <b>085875110796</b><br><a href="tel:085875110796" style="color:inherit">Telepon</a> | <a href="https://wa.me/6285875110796" style="color:inherit">WhatsApp</a></div><div id="rule" class="note"></div></div>
+<div class="card"><h3>Pembayaran</h3><label style="margin-top:0">Rekening sumber bank sampah</label><select id="src"></select><p id="dest" style="font-size:13px;color:var(--mut);margin:8px 0 0"></p></div>
+<div class="card sum"><h3>Rincian</h3><div id="sum"></div></div><button class="btn dk" id="go">Ajukan penukaran</button></div>
+
+<div class="scr" id="lacak"><div class="top"><h2 class="serif">Lacak pengantar</h2><p>Lokasi di peta, bisa dibuka dan dibagikan ke siapa saja.</p></div><div style="margin-top:14px">
+<div id="gmap"></div><div id="mapFb" hidden><svg id="map" viewBox="0 0 400 300" role="img" aria-label="Peta satelit pelacak"><defs><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .35 0"/></filter><filter id="b"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="3" seed="9"/><feDisplacementMap in="SourceGraphic" scale="30"/></filter></defs>
+<rect width="400" height="300" fill="#35572e"/><g filter="url(#b)"><rect x="-20" y="-20" width="200" height="140" fill="#4a6b32"/><rect x="200" y="40" width="220" height="120" fill="#2c4a2b"/><rect x="40" y="170" width="180" height="140" fill="#6b6a3a"/><rect x="250" y="190" width="170" height="120" fill="#3d5f36"/><ellipse cx="330" cy="30" rx="70" ry="30" fill="#1d4a5c"/></g>
+<g fill="#8a8272" opacity=".85"><rect x="150" y="105" width="14" height="10"/><rect x="170" y="112" width="10" height="9"/><rect x="290" y="165" width="12" height="9"/><rect x="95" y="215" width="12" height="9"/></g><rect width="400" height="300" filter="url(#n)"/>
+<path id="route" d="M60 250 C100 200 120 180 170 160 S250 130 280 100 S330 60 350 45" fill="none" stroke="#e8e2c9" stroke-width="5" opacity=".5"/><path id="done" fill="none" stroke="#c9a961" stroke-width="4" stroke-linecap="round"/>
+<circle cx="60" cy="250" r="7" fill="#fff" stroke="#14543f" stroke-width="3"/><circle cx="350" cy="45" r="9" fill="#14543f" stroke="#fff" stroke-width="3"/><g id="car"><circle r="12" fill="#c9a961" opacity=".35"/><circle r="6" fill="#c9a961" stroke="#0d3b30" stroke-width="2"/></g><text x="10" y="290" fill="#fff" font-size="10" opacity=".8">Citra satelit (simulasi)</text></svg></div>
+<div class="seg" id="lay"><button class="on" data-l="peta">Peta</button><button data-l="sat">Satelit</button></div>
+<div class="card" style="margin-top:12px" id="trk">Belum ada pengantaran aktif. Ajukan penukaran di tab Tukar.</div>
+<div class="g2"><a class="btn dk" id="gm" target="_blank" rel="noopener">Buka di Google Maps</a><a class="btn" id="shr" target="_blank" rel="noopener">Bagikan lokasi</a></div>
+<button class="btn ln" id="sim">Putar ulang pelacakan</button></div></div>
+
+<div class="scr" id="riwayat"><div class="top"><h2 class="serif">Riwayat</h2></div><div class="card" style="margin-top:14px" id="hist">Belum ada riwayat.</div>
+<div class="card"><h3>Kepuasan pelanggan</h3><div class="stars" id="stars"></div><textarea id="fb" rows="2" placeholder="Saran atau kritik Anda"></textarea><button class="btn dk" id="sendFb">Kirim penilaian</button><div id="fbMsg" class="note" hidden></div></div></div>
+
+<div class="scr" id="profil"><div class="top"><h2 class="serif">Biodata</h2></div><div class="card" style="margin-top:14px">
+<label style="margin-top:0">Nama lengkap</label><input id="p_nama"><label>Nomor HP</label><input id="p_hp" type="tel"><label>Alamat lengkap</label><textarea id="p_alamat" rows="3"></textarea>
+<label>Bank / e-wallet</label><select id="p_bank"></select><label>Nomor rekening / e-wallet</label><input id="p_no" inputmode="numeric"><label>Nama sesuai rekening / e-wallet</label><input id="p_an">
+<div id="pMsg" class="note" hidden></div><button class="btn dk" id="pGo">Simpan perubahan</button></div></div>
+
+<nav class="tab" id="tab"></nav>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],rp=n=>"Rp "+Math.round(n).toLocaleString("id-ID");
+const WASTE=[["Plastik (botol, gelas)",3000],["Kertas dan kardus",2000],["Logam dan kaleng",6000],["Botol kaca",1000],["Minyak jelantah (liter)",4000]];
+const BANKS=["BCA","SeaBank","DANA","ShopeePay","Mandiri","BRI","BNI","OVO","GoPay"],EW=["DANA","ShopeePay","OVO","GoPay"],SRC=["BCA","SeaBank","DANA","ShopeePay"];
+const PPN=.12,PPA=.06,MINKG=5,MAXKM=5,BASE=5000,PERKM=2500;let method="instan",mem={};
+const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):(mem[k]??d)}catch(e){return mem[k]??d}};
+const sv=(k,v)=>{mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const ICO={beranda:'<path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',tukar:'<path d="M7 7h11l-3-3M17 17H6l3 3"/>',lacak:'<path d="M12 21s7-6 7-12a7 7 0 10-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',riwayat:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',profil:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>'};
+const TABS=[["beranda","Beranda"],["tukar","Tukar"],["lacak","Lacak"],["riwayat","Riwayat"],["profil","Profil"]];
+$("#tab").innerHTML=TABS.map(t=>`<button data-go="${t[0]}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICO[t[0]]}</svg>${t[1]}</button>`).join("");
+function go(id){$$(".scr").forEach(s=>s.classList.toggle("on",s.id==id));const app=TABS.some(t=>t[0]==id);$("#tab").classList.toggle("on",app);$$("#tab button").forEach(b=>b.classList.toggle("on",b.dataset.go==id));scrollTo(0,0);if(id=="beranda")home();if(id=="tukar")calc();if(id=="riwayat")hist();if(id=="lacak")showMap()}
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g)go(g.dataset.go)});
+$("#items").innerHTML=WASTE.map((w,i)=>`<div class="row"><div>${w[0]}<br><small>${rp(w[1])} / kg</small></div><input type="number" min="0" step="0.1" placeholder="0" class="kg" data-i="${i}"></div>`).join("");
+["#r_bank","#p_bank"].forEach(s=>$(s).innerHTML=BANKS.map(b=>`<option>${b}</option>`).join(""));$("#src").innerHTML=SRC.map(b=>`<option>${b}</option>`).join("");
+let sl=0;function slide(){$$(".slide").forEach((s,i)=>s.classList.toggle("on",i==sl));$$(".dots i").forEach((d,i)=>d.classList.toggle("on",i==sl));$("#nx").textContent=sl==2?"Mulai":"Lanjut"}
+$("#nx").onclick=()=>{if(sl<2){sl++;slide()}else go("reg")};$("#sk").onclick=()=>go("reg");
+function bioSave(p,msg){const b={nama:$(p+"nama").value.trim(),hp:$(p+"hp").value.trim(),alamat:$(p+"alamat").value.trim(),bank:$(p+"bank").value,no:$(p+"no").value.trim(),an:$(p+"an").value.trim()};
+ const m=$(msg);m.hidden=false;if(!b.nama||!b.hp||!b.alamat||!b.no||!b.an){m.className="note bad";m.textContent="Semua kolom wajib diisi, termasuk alamat lengkap dan nama sesuai rekening.";return false}
+ sv("bio",b);m.className="note";m.textContent="Biodata tersimpan.";return true}
+$("#rGo").onclick=()=>{if(bioSave("#r_","#rMsg")){fill();go("beranda")}};$("#pGo").onclick=()=>{if(bioSave("#p_","#pMsg"))fill()};
+function fill(){const b=ld("bio",{});["nama","hp","alamat","no","an"].forEach(k=>$("#p_"+k).value=b[k]||"");if(b.bank)$("#p_bank").value=b.bank}
+function fee(s,d){if(s==d||(s=="ShopeePay"&&d=="SeaBank"))return 0;return EW.includes(d)?1500:6500}
+function calc(){let kg=0,gross=0;$$(".kg").forEach(e=>{const v=+e.value||0;kg+=v;gross+=v*WASTE[e.dataset.i][1]});
+ const km=+$("#km").value||0,ppn=gross*PPN,ppa=gross*PPA;let share=0,ong=0,rule;
+ if(method=="instan"){ong=BASE+PERKM*km;const ok=kg>=MINKG&&km<=MAXKM;share=ok?ong:ong/2;
+  rule=ok?`Memenuhi aturan (min ${MINKG} kg, jarak 0-${MAXKM} km): PPN, PPA, dan jasa antar ditanggung pengirim.`:`Di luar aturan (min ${MINKG} kg dan jarak 0-${MAXKM} km): jasa antar ${rp(ong)} dibagi 50%-50%, potongan Anda ${rp(share)}.`;$("#rule").className="note"+(ok?"":" bad")}
+ else{rule="Dijemput petugas: gratis ongkir. Hubungi 085875110796 untuk jadwal.";$("#rule").className="note"}
+ $("#rule").textContent=rule;const b=ld("bio",{}),dest=b.bank||"BCA",src=$("#src").value,fb=gross>0?fee(src,dest):0,net=Math.max(0,gross-ppn-ppa-share-fb);
+ $("#dest").textContent=b.no?`Tujuan: ${dest} ${b.no} a.n. ${b.an}`:"Lengkapi rekening di tab Profil.";
+ const kgT=kg.toLocaleString("id-ID",{minimumFractionDigits:1,maximumFractionDigits:1});
+ $("#sum").innerHTML=`<div class="sg">Nilai sampah</div><div class="l"><span>Total berat</span><span>${kgT} kg</span></div><div class="l"><span>Nilai kotor</span><span>${rp(gross)}</span></div>
+ <div class="sg">Potongan</div><div class="l neg"><span>PPN 12%</span><span>- ${rp(ppn)}</span></div><div class="l neg"><span>PPA 6%</span><span>- ${rp(ppa)}</span></div>
+ <div class="l neg"><span>Jasa antar<small>${method=="instan"?(share==ong?"Ditanggung pengirim":"Dibagi 50%-50%"):"Gratis ongkir"}</small></span><span>- ${rp(share)}</span></div>
+ <div class="l neg"><span>Biaya admin<small>${src} ke ${dest}${fb?"":" (bebas biaya)"}</small></span><span>- ${rp(fb)}</span></div>
+ <div class="tot"><span>Total diterima</span><span>${rp(net)}</span></div>`;return{kg,net}}
+document.addEventListener("input",e=>{if(e.target.closest("#tukar"))calc()});
+$$(".opt").forEach(o=>o.onclick=()=>{method=o.dataset.m;$$(".opt").forEach(x=>x.classList.toggle("on",x==o));$("#iBox").hidden=method!="instan";$("#jBox").hidden=method!="jemput";calc()});
+function home(){const b=ld("bio",{}),h=ld("hist",[]);$("#hi").textContent="Halo, "+(b.nama||"").split(" ")[0];$("#saldo").textContent=rp(h.reduce((a,x)=>a+x.net,0));$("#tot").textContent=h.reduce((a,x)=>a+x.kg,0).toFixed(1)+" kg sampah ditukar"}
+function hist(){const h=ld("hist",[]);$("#hist").innerHTML=h.length?h.map(x=>`<div class="h"><b>${x.tgl}</b><br>${x.kg.toFixed(1)} kg | ${x.cara} | diterima <b>${rp(x.net)}</b></div>`).join(""):"Belum ada riwayat. Mulai dari tab Tukar."}
+$("#go").onclick=()=>{const b=ld("bio",{}),r=calc();if(r.kg<=0){alert("Isi berat sampah dulu.");return}
+ const h=ld("hist",[]);h.unshift({tgl:new Date().toLocaleString("id-ID"),kg:r.kg,net:r.net,cara:method=="instan"?$("#app").value:"Dijemput petugas"});sv("hist",h.slice(0,40));
+ go("lacak");track(b.alamat)};
+const BANK=[-6.9932,110.4203];
+let map,lay={},mk={},line,done,useFb=false,raf,pick=null,curL="peta",okT=0,addrTxt="";
+const TILE={peta:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",sat:"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"};
+function fb(){if(useFb)return;useFb=true;$("#gmap").hidden=true;$("#lay").hidden=true;$("#mapFb").hidden=false}
+function links(){const p=pick||BANK;$("#gm").href="https://www.google.com/maps/dir/?api=1&destination="+p[0]+","+p[1]+"&travelmode=driving";
+ $("#shr").href="https://wa.me/?text="+encodeURIComponent("Lacak pengantaran Bank Sampah Nusa. Lokasi: https://www.google.com/maps?q="+p[0]+","+p[1])}
+function showMap(){if(!map&&!useFb){if(typeof L==="undefined"){fb()}else{
+  try{map=L.map("gmap").setView(BANK,13);let err=0;
+  for(const k in TILE){lay[k]=L.tileLayer(TILE[k],{maxZoom:19,attribution:"Tiles &copy; Esri"});lay[k].on("tileload",()=>okT++);lay[k].on("tileerror",()=>{if(++err>6&&!okT)fb()})}
+  lay.peta.addTo(map);mk.bank=L.circleMarker(BANK,{radius:9,color:"#fff",weight:3,fillColor:"#14543f",fillOpacity:1}).addTo(map).bindPopup("Bank Sampah Nusa");
+  setTimeout(()=>{if(!okT)fb()},8000)}catch(e){fb()}}}
+ if(map)setTimeout(()=>map.invalidateSize(),60);links()}
+$("#lay").onclick=e=>{const l=e.target.dataset.l;if(!l||!map)return;map.removeLayer(lay[curL]);lay[l].addTo(map);curL=l;$$("#lay button").forEach(b=>b.classList.toggle("on",b.dataset.l==l))};
+function status(k,dur,gps){$("#trk").innerHTML=(addrTxt?"<small style='color:var(--mut)'>Alamat: "+addrTxt+"</small><br>":"")+(k<1?`Pengantar menuju ${gps?"lokasi Anda":"titik penjemputan"}, sekitar <b>${Math.max(1,Math.ceil(dur*(1-k)/60))} menit</b> lagi.`:"<b>Pengantar sudah tiba.</b> Sampah Anda sedang ditimbang.")}
+function runFb(dur){const p=$("#route"),L2=p.getTotalLength(),t0=performance.now();
+ (function f(n){const k=Math.min(1,(n-t0)/20000),pt=p.getPointAtLength(L2*k);$("#car").setAttribute("transform",`translate(${pt.x} ${pt.y})`);let d="M60 250";for(let i=1;i<=24;i++){const q=p.getPointAtLength(L2*k*i/24);d+=` L${q.x} ${q.y}`}$("#done").setAttribute("d",d);status(k,dur,false);if(k<1)raf=requestAnimationFrame(f)})(t0)}
+async function track(a){cancelAnimationFrame(raf);if(a!==undefined)addrTxt=a;$("#trk").textContent="Mencari lokasi Anda...";showMap();
+ let gps=false;pick=await new Promise(r=>{if(!navigator.geolocation)return r(null);navigator.geolocation.getCurrentPosition(p=>r([p.coords.latitude,p.coords.longitude]),()=>r(null),{timeout:8000,enableHighAccuracy:true})});
+ gps=!!pick;if(!pick)pick=[BANK[0]+.02,BANK[1]+.025];links();
+ let pts=[],dur=0;
+ try{const r=await fetch(`https://router.project-osrm.org/route/v1/driving/${BANK[1]},${BANK[0]};${pick[1]},${pick[0]}?overview=full&geometries=geojson`);const j=await r.json();pts=j.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);dur=j.routes[0].duration}catch(e){}
+ if(pts.length<2){pts=[];for(let i=0;i<=60;i++)pts.push([BANK[0]+(pick[0]-BANK[0])*i/60,BANK[1]+(pick[1]-BANK[1])*i/60]);dur=Math.hypot(pick[0]-BANK[0],pick[1]-BANK[1])*111/30*3600}
+ if(useFb||!map){fb();runFb(dur);return}
+ [line,done,mk.pick,mk.cour].forEach(x=>x&&map.removeLayer(x));
+ line=L.polyline(pts,{color:"#14543f",weight:6,opacity:.45}).addTo(map);done=L.polyline([],{color:"#c9a961",weight:6}).addTo(map);
+ mk.pick=L.circleMarker(pick,{radius:9,color:"#fff",weight:3,fillColor:"#c0392b",fillOpacity:1}).addTo(map).bindPopup(gps?"Lokasi Anda":"Titik penjemputan (perkiraan)");
+ mk.cour=L.circleMarker(pts[0],{radius:8,color:"#0d3b30",weight:3,fillColor:"#c9a961",fillOpacity:1}).addTo(map);
+ map.fitBounds(line.getBounds(),{padding:[30,30]});
+ const t0=performance.now();(function f(n){const k=Math.min(1,(n-t0)/20000),i=Math.floor(k*(pts.length-1));mk.cour.setLatLng(pts[i]);done.setLatLngs(pts.slice(0,i+1));status(k,dur,gps);if(k<1)raf=requestAnimationFrame(f)})(t0)}
+$("#sim").onclick=()=>track();
+let star=0;$("#stars").innerHTML=[1,2,3,4,5].map(i=>`<button data-s="${i}" aria-label="${i} bintang">&#9733;</button>`).join("");
+$("#stars").onclick=e=>{const s=e.target.dataset.s;if(!s)return;star=+s;$$("#stars button").forEach(b=>b.classList.toggle("on",+b.dataset.s<=star))};
+$("#sendFb").onclick=()=>{const m=$("#fbMsg");m.hidden=false;if(!star){m.className="note bad";m.textContent="Pilih jumlah bintang dulu.";return}const f=ld("fb",[]);f.unshift({star,t:$("#fb").value});sv("fb",f);m.className="note";m.textContent="Terima kasih atas penilaian Anda.";$("#fb").value=""};
+fill();setTimeout(()=>go(ld("bio",null)?"beranda":"onb"),2200);
+</script></body></html>
